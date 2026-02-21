@@ -114,8 +114,7 @@ ENV CMAKE_PREFIX_PATH=/usr/local/cuda:/usr/local:/usr:${CMAKE_PREFIX_PATH}
 # Build PyTorch from source
 # Using python setup.py develop for development mode (faster rebuilds)
 # Use 'python setup.py install' for production builds
-RUN CMAKE_PREFIX_PATH="/usr/local/cuda:/usr/local:/usr:${CMAKE_PREFIX_PATH}" \
-    python3 -m pip install --no-build-isolation -v -e .
+RUN python3 -m pip install --no-build-isolation -v -e .
 
 # Create symlinks for faster incremental rebuilds during development
 RUN bash -c "cd /workspace/pytorch/torch/lib && ln -sf ../../build/lib/libtorch_cpu.* ."
@@ -154,14 +153,17 @@ chmod +x /usr/local/bin/pytorch-info
 # Copy development scripts and test files
 COPY rebuild-pytorch.sh /workspace/rebuild-pytorch.sh
 RUN chmod +x /workspace/rebuild-pytorch.sh
-# COPY serialize.py /workspace/serialize.py
-# COPY deserialize.py /workspace/deserialize.py
-# COPY entrypoint.sh /workspace/entrypoint.sh
-COPY rebuild-pytorch /workspace/rebuild-pytorch.sh
 
 CMD ["/bin/bash"]
 
 # Install PyTorch Test Python dependencies
-RUN pip install --no-cache-dir \
-    expecttest \
-    tzdata
+#RUN pip install transformers \
+#    peft \
+#    datasets \
+#    accelerate
+
+# RUN MAX_JOBS=2 pip install flash-attn --no-build-isolation --break-system-packages
+#    expecttest \
+#    tzdata
+
+RUN apt-get update && apt-get install -y vim
